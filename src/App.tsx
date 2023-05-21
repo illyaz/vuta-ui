@@ -1,5 +1,7 @@
 import {
+  Affix,
   Badge,
+  Button,
   Container,
   Flex,
   Loader,
@@ -8,6 +10,8 @@ import {
   Pagination,
   Paper,
   Space,
+  Transition,
+  rem,
 } from "@mantine/core";
 import { SearchBox, SortMode } from "./components/SearchBox";
 import { useEffect, useRef, useState } from "react";
@@ -17,9 +21,13 @@ import {
 } from "./models/SearchResult";
 import SearchResult from "./components/SearchResult";
 import { useSearchParams } from "react-router-dom";
+import { IconArrowUp } from "@tabler/icons-react";
+import { useWindowScroll } from "@mantine/hooks";
+
 const baseApiUrl = import.meta.env.VITE_VUTA_API;
 
 export default function App() {
+  const [scroll, scrollTo] = useWindowScroll();
   const [searchParams, setSearchParams] = useSearchParams();
   const [query, setQuery] = useState(searchParams.get("q") ?? "");
   const [channelId, setChannelId] = useState(searchParams.get("c") ?? "");
@@ -175,6 +183,19 @@ export default function App() {
           <SearchResult data={data} />
         </div>
       </Container>
+      <Affix position={{ bottom: rem(20), right: rem(20) }}>
+        <Transition transition="slide-up" mounted={scroll.y > 100}>
+          {(transitionStyles) => (
+            <Button
+              leftIcon={<IconArrowUp size="1rem" />}
+              style={transitionStyles}
+              onClick={() => scrollTo({ y: 0 })}
+            >
+              Scroll to top
+            </Button>
+          )}
+        </Transition>
+      </Affix>
     </MantineProvider>
   );
 }
