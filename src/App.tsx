@@ -23,11 +23,16 @@ export default function App() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [query, setQuery] = useState(searchParams.get("q") ?? "");
   const [channelId, setChannelId] = useState(searchParams.get("c") ?? "");
-  const [sort, setSort] = useState(
-    (SortMode[
-      SortMode[Number(searchParams.get("s"))] as never
-    ] as never as SortMode) ?? SortMode.Relevance
-  );
+  const [sort, setSort] = useState(() => {
+    const s = searchParams.get("s");
+    if (s)
+      return (
+        (SortMode[SortMode[Number(s)] as never] as never as SortMode) ??
+        SortMode.Newest
+      );
+
+    return SortMode.Newest;
+  });
   const [page, setPage] = useState(() => {
     const p = Math.min(200, Math.max(1, Number(searchParams.get("p") ?? "")));
     return isNaN(p) || !isFinite(p) ? 1 : p;
@@ -62,9 +67,9 @@ export default function App() {
       setSort(
         (SortMode[
           SortMode[Number(searchParams.get("s"))] as never
-        ] as never as SortMode) ?? SortMode.Relevance
+        ] as never as SortMode) ?? SortMode.Newest
       );
-    else setSort(SortMode.Relevance);
+    else setSort(SortMode.Newest);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
@@ -90,7 +95,7 @@ export default function App() {
         if (debouncedQuery) nextParams["q"] = debouncedQuery;
         if (debouncedChannelId) nextParams["c"] = debouncedChannelId;
         if (page > 1) nextParams["p"] = page.toString();
-        if (sort !== SortMode.Relevance) nextParams["s"] = sort.toString();
+        if (sort !== SortMode.Newest) nextParams["s"] = sort.toString();
         if (
           prevParams["q"] != nextParams["q"] ||
           prevParams["c"] != nextParams["c"] ||
@@ -120,10 +125,7 @@ export default function App() {
             query={query}
             onQueryChanged={setQuery}
             channelId={channelId}
-            onChannelIdChanged={(id) => {
-              setChannelId(id);
-              setPage(1);
-            }}
+            onChannelIdChanged={setChannelId}
             sort={sort}
             onSortChanged={(id) => {
               console.log("setSort", id);

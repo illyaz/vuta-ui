@@ -46,7 +46,7 @@ export const SearchBox = memo(function SearchBox({
             onSortChanged(
               x
                 ? (SortMode[x as unknown as SortMode] as unknown as SortMode)
-                : SortMode.Relevance
+                : SortMode.Newest
             )
           }
           data={Object.values(SortMode)
