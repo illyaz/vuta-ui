@@ -146,7 +146,7 @@ export default function App() {
             {data && !searching ? (
               <>
                 <Badge>Total: {data.total}</Badge>
-                <Badge>{(data.took / 100)?.toFixed(2)} sec</Badge>
+                <Badge>{(data.took / 1000)?.toFixed(2)} sec</Badge>
                 <Badge>Page: {page}</Badge>
               </>
             ) : (
