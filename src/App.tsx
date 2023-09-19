@@ -1,4 +1,5 @@
 import {
+  ActionIcon,
   Affix,
   Badge,
   Button,
@@ -6,6 +7,7 @@ import {
   Flex,
   Loader,
   MantineProvider,
+  Modal,
   Overlay,
   Pagination,
   Paper,
@@ -21,8 +23,15 @@ import {
 } from "./models/SearchResult";
 import SearchResult from "./components/SearchResult";
 import { useSearchParams } from "react-router-dom";
-import { IconArrowUp } from "@tabler/icons-react";
-import { useWindowScroll } from "@mantine/hooks";
+import {
+  IconArrowUp,
+  IconPlayerPlay,
+  IconPlayerSkipBack,
+  IconPlayerSkipForward,
+} from "@tabler/icons-react";
+import { useDisclosure, useWindowScroll } from "@mantine/hooks";
+import YouTube from "react-youtube";
+import { Player } from "./components/Player";
 
 const baseApiUrl = import.meta.env.VITE_VUTA_API;
 
@@ -50,6 +59,10 @@ export default function App() {
   const [data, setData] = useState<SearchResultModel>();
   const [searching, setSearching] = useState(false);
   const paginationRef = useRef<HTMLDivElement>(null);
+
+  const [playerOpened, { open: playerOpen, close: playerClose }] =
+    useDisclosure(false);
+  const [activeVideoId, setActiveVideoId] = useState<string | null>(null);
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -178,12 +191,49 @@ export default function App() {
           </Flex>
           <Space h="xs" />
         </Paper>
-        <div>
+        <div className="mb-20 ">
           {searching && <Overlay blur={2} />}
-          <SearchResult data={data} />
+          <SearchResult
+            data={data}
+            onVideoClick={(v) => {
+              setActiveVideoId(v);
+              playerOpen();
+            }}
+          />
         </div>
       </Container>
-      <Affix position={{ bottom: rem(20), right: rem(20) }}>
+      <Modal
+        size="lg"
+        opened={playerOpened}
+        onClose={playerClose}
+        keepMounted={true}
+        padding={0}
+      >
+        <Player data={data} videoId={activeVideoId} />
+      </Modal>
+      {/* <div className="flex fixed bottom-0 w-72 h-96 bg-neutral-900 justify-center">
+        {activePlayerId && (
+          <YouTube
+            videoId={activePlayerId}
+            onReady={(e) => {
+              e.target.setSize(288, 288 * 0.5625);
+              e.target.playVideo();
+            }}
+          />  
+        )}
+        <div className="flex gap-4 self-center">
+          <ActionIcon size="lg">
+            <IconPlayerSkipBack size={rem(32)} />
+          </ActionIcon>
+          <ActionIcon size="lg">
+            <IconPlayerPlay size={rem(32)} />
+          </ActionIcon>
+          <ActionIcon size="lg">
+            <IconPlayerSkipForward size={rem(32)} />
+          </ActionIcon>
+        </div> 
+      </div> */}
+      <Affix position={{ bottom: rem(playerOpened ? 80 : 20), right: rem(20) }}>
         <Transition transition="slide-up" mounted={scroll.y > 100}>
           {(transitionStyles) => (
             <Button

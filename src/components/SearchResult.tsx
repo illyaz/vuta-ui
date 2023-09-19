@@ -1,5 +1,6 @@
 import { memo } from "react";
-import { Text, Card, Flex, Anchor, Divider } from "@mantine/core";
+import { Text, Card, Flex, Anchor, Divider, Button } from "@mantine/core";
+import { IconPlayerPlay } from "@tabler/icons-react";
 import { SearchResult as SearchResultModel } from "../models/SearchResult";
 import Comment from "./Comment";
 import {
@@ -11,9 +12,13 @@ import {
 
 type SearchResultProps = {
   data?: SearchResultModel;
+  onVideoClick?: (videoId: string) => void;
 };
 
-const SearchResult = memo(function SearchResult({ data }: SearchResultProps) {
+const SearchResult = memo(function SearchResult({
+  data,
+  onVideoClick,
+}: SearchResultProps) {
   function renderItem({ key, index, style }: ListRowProps) {
     const hit = data?.hits[index];
     return (
@@ -35,7 +40,17 @@ const SearchResult = memo(function SearchResult({ data }: SearchResultProps) {
                   width: "10rem",
                   backgroundImage: `url(//i.ytimg.com/vi/${hit.videoId}/mqdefault.jpg)`,
                 }}
-              ></div>
+              >
+                <div className="flex h-full justify-center items-center opacity-0 hover:opacity-75">
+                  <Button
+                    variant="default"
+                    radius="lg"
+                    onClick={() => onVideoClick && onVideoClick(hit.videoId)}
+                  >
+                    <IconPlayerPlay />
+                  </Button>
+                </div>
+              </div>
               <Flex direction="column" className="overflow-hidden m-2">
                 <Anchor
                   href={`https://youtube.com/watch?v=${hit.videoId}`}
@@ -58,7 +73,11 @@ const SearchResult = memo(function SearchResult({ data }: SearchResultProps) {
             </Flex>
             <Divider />
           </Card.Section>
-          <Comment key={hit.id} videoId={hit.videoId} text={hit.highlightedText} />
+          <Comment
+            key={hit.id}
+            videoId={hit.videoId}
+            text={hit.highlightedText}
+          />
         </Card>
       )
     );
