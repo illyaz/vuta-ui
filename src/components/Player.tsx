@@ -1,7 +1,7 @@
 import YouTube from "react-youtube";
 import { Hit, SearchResult } from "../models/SearchResult";
-import { LegacyRef, useEffect, useRef, useState } from "react";
-import { useElementSize, useResizeObserver } from "@mantine/hooks";
+import { useEffect, useRef, useState } from "react";
+import { useElementSize } from "@mantine/hooks";
 import Comment from "./Comment";
 export type PlayerProps = {
   data?: SearchResult;
