@@ -1,5 +1,4 @@
 import {
-  ActionIcon,
   Affix,
   Badge,
   Button,
@@ -23,14 +22,8 @@ import {
 } from "./models/SearchResult";
 import SearchResult from "./components/SearchResult";
 import { useSearchParams } from "react-router-dom";
-import {
-  IconArrowUp,
-  IconPlayerPlay,
-  IconPlayerSkipBack,
-  IconPlayerSkipForward,
-} from "@tabler/icons-react";
+import { IconArrowUp } from "@tabler/icons-react";
 import { useDisclosure, useWindowScroll } from "@mantine/hooks";
-import YouTube from "react-youtube";
 import { Player } from "./components/Player";
 
 const baseApiUrl = import.meta.env.VITE_VUTA_API;
