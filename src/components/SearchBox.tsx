@@ -5,6 +5,7 @@ export enum SortMode {
   Relevance = 0,
   Newest = 1,
   Oldest = -1,
+  Popular = 2,
 }
 
 export type SearchBoxProps = {
