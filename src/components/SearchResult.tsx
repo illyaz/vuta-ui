@@ -52,7 +52,7 @@ const SearchResult = memo(function SearchResult({ data }: SearchResultProps) {
                   {hit.channelTitle}
                 </Anchor>
                 <Text truncate>
-                  {hit.videoPublishDate.toLocaleDateString()}
+                  {hit.videoPublishDate.toLocaleString()}
                 </Text>
               </Flex>
             </Flex>
